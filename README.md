@@ -13,6 +13,9 @@ Specify the host to scan
 - -p
 Give a range of ports to scan or specific ports separated by commas like `-p 21,22,80`.
 
+## Example
+<img src="res/scan_full.png" style="height: 75%; width: 75%">
+
 ## Still working on..
 - [ ] Giving documentation to functions and packages.
 - [ ] Adding service names of more ports.
