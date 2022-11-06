@@ -20,7 +20,7 @@ Give a range of ports to scan or specific ports separated by commas like `-p 21,
 - [ ] Giving documentation to functions and packages.
 - [ ] Adding service names of more ports.
 - [ ] Saving the results to a file.
-- [ ] Issues with appending open ports to slice in a locked area (thread-safe).
+- [x] Issues with appending open ports to slice in a locked area (thread-safe).
 - [ ] Separate service/port mappings from the code.
 - [ ] Detect if packets are filtered on a port.
 - [ ] Using better system of classifying ports during scan than appending to new slice.
