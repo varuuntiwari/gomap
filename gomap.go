@@ -19,7 +19,7 @@ func HandleError(err error) {
 }
 
 // Metadata to print on startup
-const Version = "1.0.0"
+const Version = "1.0.1"
 const Source = "github.com/varuuntiwari/gomap"
 const Author = "varuuntiwari@github"
 
