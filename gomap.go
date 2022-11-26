@@ -6,7 +6,6 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
-	"time"
 
 	"github.com/varuuntiwari/gomap/scan"
 )
@@ -88,14 +87,5 @@ func main() {
 
 	// Initialize Scanner instance
 	s := scan.Scanner{Host: Host, Ports: Ports, Timeout: Timeout}
-	startTime := time.Now()
-	fmt.Printf("Starting scan at %v\n", startTime.Format("02-01-2006 15:04:05"))
-	err := s.Run()
-	HandleError(err)
-	// Print result of scan
-	err = s.ShowPorts()
-	HandleError(err)
-	endTime := time.Now()
-	fmt.Printf("Scan ended at %v\n", endTime.Format("02-01-2006 15:04:05"))
-	fmt.Printf("Scanned %v ports in %v", len(s.Ports), endTime.Sub(startTime))
+	s.PrettyRun()
 }

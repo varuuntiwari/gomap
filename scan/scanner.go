@@ -1,3 +1,19 @@
+// Package scan defines the struct Scanner and methods associated with it.
+//
+// This package is made to faciliate scanning for the tool shodan-go at
+// github.com/varuuntiwari/shodan-go, thus it provides an abstract way
+// of scanning a particular host and given ports along with various options.
+//
+// Other than being used for another tool, it can also be compiled and used as
+// a standalone scanner for a single host at a time.
+//
+// The program accepts flag parameters as follows:
+//
+// -h : specify host to scan, eg. 101.43.75.11, scanme.nmap.org
+//
+// -p : specify ports to scan, eg. 80, 1-100, 22,21,53. defaults to 1-1000
+//
+// -t : specify timeout for receiving response from every port. defaults to 2 seconds.
 package scan
 
 import (
@@ -28,31 +44,6 @@ type Scanner struct {
 	Scanned 	bool
 }
 
-// Map ports to commonly used services
-var ServicePorts = map[int]string{
-	21: "ftp",
-	22: "ssh",
-	23: "telnet",
-	25: "smtp",
-	43: "whois",
-	53: "dns",
-	69: "tftp",
-	80: "http",
-	123: "ntp",
-	135: "msrpc",
-	389: "ldap",
-	443: "https",
-	512: "rexec",
-	513: "rlogin",
-	514: "syslog",
-	520: "rip",
-	587: "smtp",
-	1433: "mssql",
-	3306: "mysql",
-	5432: "postgres",
-	8080: "http-proxy",	
-}
-
 // Function ShowPorts is a struct function of Scanner struct which
 // prints out the open ports of the struct after checking if the Run function
 // has scanned the host.
@@ -65,7 +56,7 @@ func (sc Scanner) ShowPorts() (error) {
 	if !sc.Scanned {
 		return errors.New("host not scanned")
 	}
-	fmt.Println("Ports Scanned:\nPort\tService\t\tStatus")
+	fmt.Println("\nPorts Scanned:\nPort\tService\t\tStatus")
 	for _, port := range sc.OpenPorts {
 		serv, ok := ServicePorts[port]
 		if ok {
@@ -106,4 +97,31 @@ func (sc *Scanner) Run() (err error) {
 	wg.Wait()
 	sc.Scanned = true
 	return nil
+}
+
+// Function PrettyRun runs the scan, along with timing it and printing the details
+// of the scan to the console.
+func (sc *Scanner) PrettyRun() (err error) {
+	startTime := time.Now()
+	fmt.Printf("\nStarting scan at %v\n", startTime.Format("02-01-2006 15:04:05"))
+	err = sc.Run()
+	if err != nil { return }
+	// Print result of scan
+	err = sc.ShowPorts()
+	if err != nil { return }
+	endTime := time.Now()
+	fmt.Printf("Scan ended at %v\n", endTime.Format("02-01-2006 15:04:05"))
+	fmt.Printf("Scanned %v ports in %v\n", len(sc.Ports), endTime.Sub(startTime))
+	return
+}
+
+// Function Refresh clears the OpenPorts and changes Scanned status to false.
+// Then it proceeds to scan the Host again if the parameter is set to true.
+func (sc *Scanner) Refresh(runAgain bool) (err error) {
+	sc.Scanned = false
+	sc.OpenPorts = nil
+	if runAgain {
+		err = sc.Run()
+	}
+	return
 }
